@@ -2,16 +2,16 @@ from rest_framework import serializers
 
 from .models import Reserve, Room
 
-RESERVE_EXIST = 'Бронь на дату в промежутке уже существует'
-ROOM_NOT_EXIST = 'Данной комнаты не существует'
-DATE_END_ERROR = 'Дата окончания брони не может быть раньше старта брони'
-DATE_EQUALLY = 'Забронировать можно минимум на один день'
+RESERVE_EXIST = 'Бронь уже существует'
+ROOM_NOT_EXIST = 'Комнаты не существует'
+DATE_END_ERROR = 'Невозможно забронировать на эту дату'
+DATE_EQUALLY = 'Бронь доступна только на один день'
 
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
-        fields = ('id', 'number', 'cost', 'place_quantity')
+        fields = ('id', 'number', 'price', 'number_seats')
 
 
 class ReserveSerializer(serializers.ModelSerializer):
@@ -34,8 +34,8 @@ class ReserveSerializer(serializers.ModelSerializer):
         except Exception:
             raise serializers.ValidationError(ROOM_NOT_EXIST)
         if (Reserve.objects.filter(room=room, start_date__lte=start_date, end_date__gte=end_date).exists()
-           or Reserve.objects.filter(room=room, start_date__gte=start_date, start_date__lt=end_date).exists()
-           or Reserve.objects.filter(room=room, end_date__lte=start_date, end_date__gte=end_date).exists()):
+                or Reserve.objects.filter(room=room, start_date__gte=start_date, start_date__lt=end_date).exists()
+                or Reserve.objects.filter(room=room, end_date__lte=start_date, end_date__gte=end_date).exists()):
             raise serializers.ValidationError(RESERVE_EXIST)
         return super().validate(data)
 

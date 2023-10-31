@@ -15,9 +15,9 @@ class RoomViewSet(viewsets.ModelViewSet):
         DjangoFilterBackend,
         filters.OrderingFilter
     )
-    filterset_fields = ('cost', 'place_quantity')
-    ordering_fields = ('cost', 'place_quantity')
-    ordering = ('cost',)
+    filterset_fields = ('price', 'number_seats')
+    ordering_fields = ('price', 'number_seats')
+    ordering = ('price',)
 
     def get_queryset(self):
         queryset = super().get_queryset()
